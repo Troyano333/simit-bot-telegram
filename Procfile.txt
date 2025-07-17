@@ -1,1 +1,1 @@
-worker: pip install -r requirements.txt && playwright install --with-deps && python bot.py
+worker: python bot.py
