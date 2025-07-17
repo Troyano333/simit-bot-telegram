@@ -1,8 +1,9 @@
-# bot.py (VERSIÓN LISTA PARA RAILWAY)
+# bot.py (VERSIÓN LISTA PARA RAILWAY - CON MEJORA DE LOGS PARA DEPURACIÓN)
 
 import logging
 import asyncio
 import os
+import traceback # <--- ¡IMPORTANTE! Añadimos la librería traceback
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 
@@ -41,7 +42,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(resultado)
         
     except Exception as e:
-        logging.error(f"Error al consultar el SIMIT: {e}")
+        # --- ¡CORRECCIÓN CLAVE PARA DEPURACIÓN! ---
+        # Registramos el error completo, incluyendo el traceback, para ver qué falla.
+        logging.error(f"Error al consultar el SIMIT: {e}\n{traceback.format_exc()}")
         await update.message.reply_text("⚠️ No se pudo obtener información del SIMIT. Revisa si el sitio web está funcionando.")
 
 def main():
@@ -53,3 +56,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
