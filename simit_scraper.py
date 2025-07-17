@@ -1,4 +1,4 @@
-# simit_scraper.py (VERSIÓN FINAL CON ESTRATEGIA DE CARGA OPTIMIZADA)
+# simit_scraper.py (VERSIÓN CON TIMEOUTS AUMENTADOS)
 
 from playwright.sync_api import sync_playwright, expect, TimeoutError
 import re
@@ -34,16 +34,20 @@ def consultar_simit(cedula: str) -> str:
             context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
             page = context.new_page()
 
-            page.set_default_timeout(90000)
+            # --- TIMEOUTS AUMENTADOS ---
+            page.set_default_timeout(180000) # 3 minutos (antes 90 segundos)
 
             # Cambiamos 'networkidle' por 'domcontentloaded' para una carga más rápida y fiable.
-            page.goto("https://www.fcm.org.co/simit/#/home-public", wait_until="domcontentloaded", timeout=180000)
+            # --- TIMEOUT AUMENTADO ---
+            page.goto("https://www.fcm.org.co/simit/#/home-public", wait_until="domcontentloaded", timeout=300000) # 5 minutos (antes 3 minutos)
 
             # Esperar a que la página sea funcional.
             spinner_locator = page.locator(".spinner")
-            expect(spinner_locator).to_be_hidden(timeout=90000)
+            # --- TIMEOUT AUMENTADO ---
+            expect(spinner_locator).to_be_hidden(timeout=180000) # 3 minutos (antes 90 segundos)
 
             try:
+                # Intenta cerrar el popup si aparece
                 page.get_by_role("button", name="Cerrar.").click(force=True, timeout=5000)
             except TimeoutError:
                 pass
