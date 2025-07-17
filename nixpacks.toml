@@ -1,0 +1,21 @@
+# nixpacks.toml - Manual de Instrucciones para Railway
+
+# Fase 1: Configurar el sistema operativo del servidor
+[phases.setup]
+# Le decimos que instale Python 3.11 y una librería extra que Playwright necesita.
+nixPkgs = ["python311", "ffmpeg"]
+
+# Fase 2: Instalar las librerías de Python
+[phases.install]
+# Ahora que Python está instalado, ejecutamos pip.
+cmds = ["pip install --upgrade pip", "pip install -r requirements.txt"]
+
+# Fase 3: Instalar los navegadores de Playwright
+[phases.build]
+# Una vez que playwright está instalado, le decimos que descargue sus navegadores.
+cmds = ["playwright install --with-deps"]
+
+# Fase 4: Comando para iniciar el bot
+[start]
+# Le decimos cómo arrancar el bot después de que todo esté instalado.
+command = "python bot.py"
