@@ -1,7 +1,8 @@
-# simit_scraper.py (VERSIÓN CON TIMEOUTS AUMENTADOS)
+# simit_scraper.py (VERSIÓN CON TIMEOUTS AUMENTADOS Y MEJORA DE LOGS PARA DEPURACIÓN)
 
 from playwright.sync_api import sync_playwright, expect, TimeoutError
 import re
+import traceback # <--- ¡IMPORTANTE! Añadimos la librería traceback
 
 def formatear_resultados(cedula: str, filas_tabla: list) -> str:
     """Toma los datos de la tabla y los convierte en un mensaje de texto formateado."""
@@ -77,5 +78,8 @@ def consultar_simit(cedula: str) -> str:
             return resultado
 
     except Exception as e:
-        print(f"❌ Error consultando el SIMIT: {e}")
+        # --- ¡CORRECCIÓN CLAVE PARA DEPURACIÓN! ---
+        # Imprimimos el error completo, incluyendo el traceback, para ver qué falla.
+        # Esto aparecerá en los logs de Railway.
+        print(f"❌ Error consultando el SIMIT: {e}\n{traceback.format_exc()}")
         return "⚠️ Ocurrió un error. El sitio del SIMIT tardó demasiado en responder o está caído. Esto puede deberse a una conexión lenta. Intenta de nuevo más tarde."
